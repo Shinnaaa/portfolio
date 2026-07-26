@@ -50,20 +50,11 @@ function DriftTooltip({ active, payload, label }) {
   );
 }
 
-export default function History({ snapshots, settings, onClear, onExport, onImport }) {
-  const rows = snapshots.map((snap) => {
-    const cashTotal = snap.cashJPY + snap.cashCNY * (snap.jpyPerCny || settings.jpyPerCny);
-    const total = snap.stocks + snap.bonds + snap.gold + cashTotal;
-    return {
-      ...snap,
-      cashTotal,
-      total,
-      stocksPct: total ? (snap.stocks / total) * 100 : 0,
-      bondsPct: total ? (snap.bonds / total) * 100 : 0,
-      goldPct: total ? (snap.gold / total) * 100 : 0,
-      cashPct: total ? (cashTotal / total) * 100 : 0,
-    };
-  });
+export default function History({ snapshots, onClear, onExport, onImport }) {
+  const rows = snapshots.map((snap) => ({
+    ...snap,
+    total: snap.stocks + snap.bonds + snap.gold + snap.cash,
+  }));
 
   return (
     <div className="history">
@@ -96,7 +87,7 @@ export default function History({ snapshots, settings, onClear, onExport, onImpo
                   <Line type="monotone" dataKey="stocks" stroke={CATEGORY_COLORS.stocks} strokeWidth={1.5} dot={false} opacity={0.7} />
                   <Line type="monotone" dataKey="bonds" stroke={CATEGORY_COLORS.bonds} strokeWidth={1.5} dot={false} opacity={0.7} />
                   <Line type="monotone" dataKey="gold" stroke={CATEGORY_COLORS.gold} strokeWidth={1.5} dot={false} opacity={0.7} />
-                  <Line type="monotone" dataKey="cashTotal" stroke={CATEGORY_COLORS.cash} strokeWidth={1.5} dot={false} opacity={0.7} />
+                  <Line type="monotone" dataKey="cash" stroke={CATEGORY_COLORS.cash} strokeWidth={1.5} dot={false} opacity={0.7} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -166,7 +157,7 @@ export default function History({ snapshots, settings, onClear, onExport, onImpo
                   <Area type="monotone" dataKey="stocks" stackId="1" stroke={CATEGORY_COLORS.stocks} fill="url(#g-stocks)" strokeWidth={1.5} />
                   <Area type="monotone" dataKey="bonds" stackId="1" stroke={CATEGORY_COLORS.bonds} fill="url(#g-bonds)" strokeWidth={1.5} />
                   <Area type="monotone" dataKey="gold" stackId="1" stroke={CATEGORY_COLORS.gold} fill="url(#g-gold)" strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="cashTotal" stackId="1" stroke={CATEGORY_COLORS.cash} fill="url(#g-cash)" strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="cash" stackId="1" stroke={CATEGORY_COLORS.cash} fill="url(#g-cash)" strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -217,7 +208,7 @@ export default function History({ snapshots, settings, onClear, onExport, onImpo
                       <td className="num">{formatCurrency(r.stocks)}</td>
                       <td className="num">{formatCurrency(r.bonds)}</td>
                       <td className="num">{formatCurrency(r.gold)}</td>
-                      <td className="num">{formatCurrency(r.cashTotal)}</td>
+                      <td className="num">{formatCurrency(r.cash)}</td>
                       <td className="num bold">{formatCurrency(r.total)}</td>
                     </tr>
                   ))}

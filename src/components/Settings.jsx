@@ -16,10 +16,6 @@ export default function Settings({ settings, onSave, sync, syncStatus, syncError
   const targetSum = local.targetStocks + local.targetBonds + local.targetGold + local.targetCash;
   const targetsValid = Math.abs(targetSum - 1) < 0.001;
 
-  const setNumberField = (key, raw) => {
-    const num = raw === "" ? 0 : Number(raw);
-    if (!isNaN(num)) setLocal({ ...local, [key]: num });
-  };
   const setPercentField = (key, raw) => {
     const num = raw === "" ? 0 : Number(raw);
     if (!isNaN(num)) setLocal({ ...local, [key]: num / 100 });
@@ -29,7 +25,7 @@ export default function Settings({ settings, onSave, sync, syncStatus, syncError
     <div className="settings">
       <div className="update-head">
         <h1>Settings</h1>
-        <p className="update-sub">汇率、目标比例、再平衡阈值、跨设备同步。</p>
+        <p className="update-sub">目标比例、再平衡阈值、跨设备同步。</p>
       </div>
 
       <div className="card">
@@ -121,28 +117,6 @@ export default function Settings({ settings, onSave, sync, syncStatus, syncError
             {syncError && <div className="sync-error">{syncError}</div>}
           </>
         )}
-      </div>
-
-      <div className="card">
-        <div className="card-head">
-          <h2>Exchange Rate</h2>
-        </div>
-        <div className="set-row">
-          <div className="set-meta">
-            <div className="set-label">JPY per CNY</div>
-            <div className="set-en">1 人民币 = ? 日元</div>
-          </div>
-          <div className="upd-input-wrap">
-            <input
-              type="number"
-              step="0.01"
-              inputMode="decimal"
-              className="upd-input"
-              value={local.jpyPerCny}
-              onChange={(e) => setNumberField("jpyPerCny", e.target.value)}
-            />
-          </div>
-        </div>
       </div>
 
       <div className="card">

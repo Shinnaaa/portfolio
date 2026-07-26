@@ -4,14 +4,13 @@ const CATEGORY_META = [
   { key: "stocks", label: "股票", subtitle: "Stocks · NISA" },
   { key: "bonds", label: "长期债券", subtitle: "Long-term Bonds" },
   { key: "gold", label: "黄金", subtitle: "Gold" },
-  { key: "cash", label: "现金", subtitle: "Cash · JPY+CNY" },
+  { key: "cash", label: "现金", subtitle: "Cash · USD MMF" },
 ];
 
 // Derives the dashboard view model (totals, per-category rebalance state,
 // balance score, and month-over-month change) from raw holdings/settings/snapshots.
 export function computePortfolio(holdings, settings, snapshots) {
-  const cashTotal = (holdings.cashJPY || 0) + (holdings.cashCNY || 0) * settings.jpyPerCny;
-  const values = { stocks: holdings.stocks || 0, bonds: holdings.bonds || 0, gold: holdings.gold || 0, cash: cashTotal };
+  const values = { stocks: holdings.stocks || 0, bonds: holdings.bonds || 0, gold: holdings.gold || 0, cash: holdings.cash || 0 };
   const targets = {
     stocks: settings.targetStocks,
     bonds: settings.targetBonds,
@@ -41,9 +40,7 @@ export function computePortfolio(holdings, settings, snapshots) {
 
   let mom = null;
   if (priorSnapshot) {
-    const priorCash =
-      priorSnapshot.cashJPY + priorSnapshot.cashCNY * (priorSnapshot.jpyPerCny || settings.jpyPerCny);
-    const priorTotal = priorSnapshot.stocks + priorSnapshot.bonds + priorSnapshot.gold + priorCash;
+    const priorTotal = priorSnapshot.stocks + priorSnapshot.bonds + priorSnapshot.gold + priorSnapshot.cash;
     if (priorTotal > 0) {
       mom = {
         ym: priorSnapshot.ym,
@@ -54,5 +51,5 @@ export function computePortfolio(holdings, settings, snapshots) {
     }
   }
 
-  return { total, cashTotal, cats, totalDev, balanceScore, mom };
+  return { total, cats, totalDev, balanceScore, mom };
 }

@@ -1,18 +1,21 @@
 const DATA_KEY = "pp:data:v1";
 const SYNC_KEY = "pp:sync:v1";
-export const DATA_VERSION = 1;
+export const DATA_VERSION = 2;
 
+// `cash` is the JPY-equivalent market value of the USD MMF holding, entered
+// directly (like stocks/bonds/gold) rather than tracked as a USD balance
+// converted at a stored rate. FX moves and MMF interest just show up as an
+// ordinary month-over-month gain/loss, same as market moves for the other
+// three categories.
 export const DEFAULT_HOLDINGS = {
   stocks: 132110,
   bonds: 34721,
   gold: 34716,
-  cashJPY: 500000,
-  cashCNY: 0,
+  cash: 500000,
   updatedAt: null,
 };
 
 export const DEFAULT_SETTINGS = {
-  jpyPerCny: 21,
   targetStocks: 0.25,
   targetBonds: 0.25,
   targetGold: 0.25,

@@ -59,9 +59,6 @@ export default function Dashboard({ computed, holdings, settings, onUpdate }) {
             <div className="hero-label">Total Assets</div>
             <AnimatedValue value={total} className="hero-value" />
             <div className="hero-sub-row">
-              <span className="hero-sub">
-                ≈ ¥{Math.round(total / settings.jpyPerCny).toLocaleString("en-US")} CNY
-              </span>
               {mom && (
                 <span className={`hero-delta ${mom.delta >= 0 ? "pos" : "neg"}`}>
                   <span className="delta-arrow">{mom.delta >= 0 ? "▲" : "▼"}</span>
@@ -277,26 +274,14 @@ export default function Dashboard({ computed, holdings, settings, onUpdate }) {
                 <td className="num">{formatPercent(total ? holdings.gold / total : 0)}</td>
               </tr>
               <tr>
-                <td className="left sub-row">
+                <td className="left">
                   <span className="dot inline" style={{ background: CATEGORY_COLORS.cash }} />
-                  现金 Cash (JPY)
+                  现金 USD MMF
                 </td>
                 <td>JPY</td>
-                <td className="num">{formatCurrency(holdings.cashJPY)}</td>
-                <td className="num">{formatCurrency(holdings.cashJPY)}</td>
-                <td className="num">{formatPercent(total ? holdings.cashJPY / total : 0)}</td>
-              </tr>
-              <tr>
-                <td className="left sub-row">
-                  <span className="dot inline" style={{ background: CATEGORY_COLORS.cash, opacity: 0.6 }} />
-                  现金 Cash (CNY)
-                </td>
-                <td>CNY</td>
-                <td className="num">¥{(holdings.cashCNY || 0).toLocaleString("en-US")}</td>
-                <td className="num">{formatCurrency(holdings.cashCNY * settings.jpyPerCny)}</td>
-                <td className="num">
-                  {formatPercent(total ? (holdings.cashCNY * settings.jpyPerCny) / total : 0)}
-                </td>
+                <td className="num">{formatCurrency(holdings.cash)}</td>
+                <td className="num">{formatCurrency(holdings.cash)}</td>
+                <td className="num">{formatPercent(total ? holdings.cash / total : 0)}</td>
               </tr>
               <tr className="total-row">
                 <td className="left">Total</td>

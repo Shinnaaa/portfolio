@@ -189,8 +189,8 @@ export default function App() {
         const remoteData = JSON.parse(gist.files[GIST_FILENAME].content || "{}");
         const remoteHasData =
           remoteData.holdings &&
-          (remoteData.holdings.stocks || remoteData.holdings.bonds || remoteData.holdings.gold || remoteData.holdings.cashJPY || remoteData.holdings.cashCNY);
-        const localHasData = holdings.stocks || holdings.bonds || holdings.gold || holdings.cashJPY || holdings.cashCNY || snapshots.length > 0;
+          (remoteData.holdings.stocks || remoteData.holdings.bonds || remoteData.holdings.gold || remoteData.holdings.cash);
+        const localHasData = holdings.stocks || holdings.bonds || holdings.gold || holdings.cash || snapshots.length > 0;
 
         const pullRemote = () => {
           if (remoteData.holdings) {
@@ -281,10 +281,7 @@ export default function App() {
       stocks: nextHoldings.stocks,
       bonds: nextHoldings.bonds,
       gold: nextHoldings.gold,
-      cashJPY: nextHoldings.cashJPY,
-      cashCNY: nextHoldings.cashCNY,
-      jpyPerCny: settings.jpyPerCny,
-      activities: update.activities || [],
+      cash: nextHoldings.cash,
     };
     const withoutThisMonth = snapshots.filter((s) => s.ym !== ym);
     setSnapshots([...withoutThisMonth, snapshot].sort((a, b) => a.ym.localeCompare(b.ym)));
@@ -401,7 +398,7 @@ export default function App() {
 
       <main className="pp-main">
         {activeTab === "dashboard" && <Dashboard computed={computed} holdings={holdings} settings={settings} onUpdate={openUpdate} />}
-        {activeTab === "update" && <UpdateForm editing={editingSnapshot} settings={settings} onSave={handleSaveUpdate} onCancel={() => setActiveTab("dashboard")} />}
+        {activeTab === "update" && <UpdateForm editing={editingSnapshot} onSave={handleSaveUpdate} onCancel={() => setActiveTab("dashboard")} />}
         {activeTab === "settings" && (
           <Settings
             settings={settings}
@@ -418,7 +415,6 @@ export default function App() {
         {activeTab === "history" && (
           <History
             snapshots={snapshots}
-            settings={settings}
             onClear={() => {
               if (window.confirm("清空所有历史快照？此操作不可撤销。")) {
                 setSnapshots([]);

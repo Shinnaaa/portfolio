@@ -10,7 +10,7 @@ export const TOOLTIP_LABELS = {
   stocks: "股票",
   bonds: "债券",
   gold: "黄金",
-  cashTotal: "现金",
+  cash: "现金",
 };
 
 export function formatCurrency(value) {
