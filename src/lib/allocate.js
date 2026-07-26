@@ -1,14 +1,16 @@
-// Suggests how to split a new contribution across stocks/bonds/gold (cash is
-// the source of the funds, never a target). Two modes:
+// Suggests how to split newly-arriving money (salary, other outside income —
+// this app doesn't track where it comes from) across all four categories,
+// including cash/MMF: cash is a normal 25%-target destination here, not a
+// source, since the new money never lived in the existing MMF balance. Two
+// modes:
 //  - "smart": fills the most-underweight categories first, then spills any
 //    remainder across categories proportional to their target weight.
 //  - "proportional": always splits strictly by target weight.
 export function computeAllocation(amount, mode, total, cats) {
   if (!amount || amount <= 0) return { suggestions: null, projection: null };
 
-  const nonCash = cats.filter((c) => c.key !== "cash");
-  const targetWeightSum = nonCash.reduce((sum, c) => sum + c.target, 0);
-  const withGap = nonCash.map((c) => ({
+  const newTotal = total + amount;
+  const withGap = cats.map((c) => ({
     ...c,
     targetValue: total * c.target,
     gap: Math.max(0, total * c.target - c.value),
@@ -17,7 +19,7 @@ export function computeAllocation(amount, mode, total, cats) {
   let suggestions;
   if (mode === "proportional") {
     suggestions = withGap.map((c) => {
-      const allocated = amount * (c.target / targetWeightSum);
+      const allocated = amount * c.target;
       return { key: c.key, label: c.label, amount: allocated, currentValue: c.value, newValue: c.value + allocated };
     });
   } else {
@@ -31,7 +33,7 @@ export function computeAllocation(amount, mode, total, cats) {
     } else {
       const remaining = amount - totalGap;
       raw = withGap.map((c) => {
-        const allocated = c.gap + remaining * (c.target / targetWeightSum);
+        const allocated = c.gap + remaining * c.target;
         return { key: c.key, label: c.label, amount: allocated, currentValue: c.value, newValue: c.value + allocated };
       });
     }
@@ -47,15 +49,9 @@ export function computeAllocation(amount, mode, total, cats) {
     suggestions = rounded.map((c) => ({ ...c, newValue: c.currentValue + c.amount }));
   }
 
-  const totalAllocated = suggestions.reduce((sum, c) => sum + c.amount, 0);
   const projection = cats.map((c) => {
     const s = suggestions.find((x) => x.key === c.key);
-    if (!s) {
-      // Cash funds the allocation, so it absorbs the full amount moved out.
-      const newValue = c.value - totalAllocated;
-      return { ...c, newValue, newShare: total > 0 ? newValue / total : 0 };
-    }
-    return { ...c, newValue: s.newValue, newShare: total > 0 ? s.newValue / total : 0 };
+    return { ...c, newValue: s.newValue, newShare: newTotal > 0 ? s.newValue / newTotal : 0 };
   });
 
   return { suggestions, projection };

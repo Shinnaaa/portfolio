@@ -18,15 +18,15 @@ export default function AllocateFunds({ computed }) {
     <div className="update">
       <div className="update-head">
         <h1>Allocate New Funds</h1>
-        <p className="update-sub">输入你这次想投入的金额，自动按当前偏离度智能分配。从现金移出到股票/债券/黄金。</p>
+        <p className="update-sub">输入这次新到账、还没分配的资金（工资/其他收入），自动按当前偏离度智能分配到股票/债券/黄金/现金(MMF) 四项。</p>
       </div>
 
       <div className="update-form">
         <div className="upd-row">
           <div className="upd-meta">
-            <div className="upd-label">投入金额</div>
-            <div className="upd-en">Amount to invest</div>
-            <div className="upd-hint">这次想从现金调拨到投资的总额（日元）</div>
+            <div className="upd-label">新到账金额</div>
+            <div className="upd-en">New funds to allocate</div>
+            <div className="upd-hint">这次新到账、尚未投入组合的资金（日元）</div>
           </div>
           <div className="upd-input-wrap">
             <span className="upd-cur">¥</span>
